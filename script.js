@@ -827,7 +827,7 @@ function initWebsiteScripts() {
       return;
     }
 
-    const WHATSAPP_MATERIAL_NUMBER = '233207004123';
+    const WHATSAPP_MATERIAL_NUMBER = WHATSAPP_PHONE_NUMBER; // Ghana +233 268339409 (0268339409)
 
     const lines = [];
     lines.push('BUILDING MATERIAL REQUEST');
