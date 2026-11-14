@@ -1247,35 +1247,45 @@
         <div class="modal-body" style="max-height: 80vh; overflow-y: auto;">
           <form class="contact-form" id="materialRequestForm">
             <!-- Dynamic Estimated Price Banner -->
-            <div id="priceBanner" style="background: #0f172a; color: #D59E29; border: 2px solid #D59E29; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+            <div id="priceBanner" style="background: #0f172a; color: #D59E29; border: 2px solid #D59E29; padding: 16px; border-radius: 8px; margin-bottom: 16px; text-align: center;">
               <div style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #cbd5e1; margin-bottom: 4px;">Pricing Summary</div>
               <div id="priceBannerText" style="font-size: 18px; font-weight: 800; color: #ffffff;">Select truck size and material type to view price.</div>
             </div>
 
+            <p style="font-size: 12.5px; color: #64748b; margin-bottom: 16px; font-weight: 500;">
+              Fields marked with <span style="color: #dc2626; font-weight: 700;">*</span> are required.
+            </p>
+
+            <div class="form-group">
+              <label class="form-label" for="materialName">Name <span style="color: #dc2626;" aria-hidden="true">*</span></label>
+              <input type="text" id="materialName" name="fullName" class="form-input" placeholder="e.g. Kwame Mensah" required />
+            </div>
+
             <div class="form-row-2">
               <div class="form-group">
-                <label class="form-label">Full Name *</label>
-                <input type="text" name="fullName" class="form-input" placeholder="e.g. Kwame Mensah" required />
+                <label class="form-label" for="materialPhoneNumber">Phone Number <span style="color: #dc2626;" aria-hidden="true">*</span></label>
+                <input type="tel" id="materialPhoneNumber" name="phoneNumber" class="form-input" placeholder="0558231236" required />
               </div>
               <div class="form-group">
-                <label class="form-label">Phone / WhatsApp Number *</label>
-                <input type="tel" name="phoneNumber" class="form-input" placeholder="0558231236" required />
+                <label class="form-label" for="materialWhatsappNumber">WhatsApp Number (Optional)</label>
+                <input type="tel" id="materialWhatsappNumber" name="whatsappNumber" class="form-input" placeholder="e.g. 0268339409" />
               </div>
             </div>
 
             <div class="form-row-2">
               <div class="form-group">
-                <label class="form-label">Tipper Truck Bucket Size *</label>
-                <select name="truckSize" id="modalTruckSize" class="form-select" required>
-                  <option value="">-- Select Bucket Size --</option>
+                <label class="form-label" for="modalTruckSize">Tipper Truck Bucket Size (Optional)</label>
+                <select name="truckSize" id="modalTruckSize" class="form-select">
+                  <option value="" selected>-- Select Bucket Size --</option>
                   <option value="16 Cubic">16 Cubic</option>
                   <option value="18 Cubic">18 Cubic</option>
                   <option value="20 Cubic">20 Cubic</option>
                 </select>
               </div>
               <div class="form-group">
-                <label class="form-label">Building Material *</label>
-                <select name="buildingMaterial" id="modalBuildingMaterial" class="form-select" required>
+                <label class="form-label" for="modalBuildingMaterial">Building Material (Optional)</label>
+                <select name="buildingMaterial" id="modalBuildingMaterial" class="form-select">
+                  <option value="" selected>-- Select Building Material --</option>
                   <option value="Quarry Stones / Chippings">Quarry Stones / Chippings</option>
                   <option value="Riversand">Riversand</option>
                   <option value="Filling Sand">Filling Sand</option>
@@ -1285,20 +1295,21 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">Material Subcategory / Type *</label>
-              <select name="materialSubcategory" id="modalMaterialSubcategory" class="form-select" required>
-                <option value="">-- Select Material Type --</option>
+              <label class="form-label" for="modalMaterialSubcategory">Material Subcategory / Type (Optional)</label>
+              <select name="materialSubcategory" id="modalMaterialSubcategory" class="form-select">
+                <option value="" selected>-- Select Material Type --</option>
               </select>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Destination / Delivery Location *</label>
-              <input type="text" name="projectLocation" class="form-input" placeholder="Enter delivery location or destination" required />
+              <label class="form-label" for="materialProjectLocation">Destination / Delivery Location (Optional)</label>
+              <input type="text" id="materialProjectLocation" name="projectLocation" class="form-input" placeholder="Enter delivery location or destination" />
             </div>
 
             <div class="form-group">
-              <label class="form-label">Request Type *</label>
-              <select name="requestType" id="modalRequestType" class="form-select" required>
+              <label class="form-label" for="modalRequestType">Request Type (Optional)</label>
+              <select name="requestType" id="modalRequestType" class="form-select">
+                <option value="" selected>-- Select Request Type --</option>
                 <option value="Instant Request">Instant Request</option>
                 <option value="Scheduled Request">Scheduled Request</option>
               </select>
@@ -1308,19 +1319,19 @@
             <div id="scheduledFields" style="display: none; background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
               <div class="form-row-2">
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Scheduled Delivery Date *</label>
-                  <input type="date" name="scheduledDate" class="form-input" />
+                  <label class="form-label" for="materialScheduledDate">Scheduled Delivery Date (Optional)</label>
+                  <input type="date" id="materialScheduledDate" name="scheduledDate" class="form-input" />
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Preferred Delivery Time *</label>
-                  <input type="time" name="scheduledTime" class="form-input" />
+                  <label class="form-label" for="materialScheduledTime">Preferred Delivery Time (Optional)</label>
+                  <input type="time" id="materialScheduledTime" name="scheduledTime" class="form-input" />
                 </div>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Additional Instructions (Optional)</label>
-              <textarea name="additionalInstructions" class="form-textarea" rows="3" placeholder="Any specific delivery instructions or gate access notes..."></textarea>
+              <label class="form-label" for="materialAdditionalInstructions">Additional Instructions (Optional)</label>
+              <textarea id="materialAdditionalInstructions" name="additionalInstructions" class="form-textarea" rows="3" placeholder="Any specific delivery instructions or gate access notes..."></textarea>
             </div>
 
             <!-- WhatsApp Submit Button -->

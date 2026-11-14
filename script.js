@@ -741,13 +741,22 @@ function initWebsiteScripts() {
   materialBtns.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
-      const material = btn.getAttribute('data-material') || 'Quarry Stones / Chippings';
-      if (modalBuildingMaterial) {
-        modalBuildingMaterial.value = material;
-        updateSubcategories(material);
-      }
       if (modalTruckSize) {
         modalTruckSize.value = '';
+      }
+      if (modalBuildingMaterial) {
+        modalBuildingMaterial.value = '';
+      }
+      updateSubcategories('');
+      if (modalRequestType) {
+        modalRequestType.value = '';
+      }
+      if (scheduledFields) {
+        scheduledFields.style.display = 'none';
+        const dateInput = scheduledFields.querySelector('[name="scheduledDate"]');
+        const timeInput = scheduledFields.querySelector('[name="scheduledTime"]');
+        if (dateInput) { dateInput.required = false; dateInput.value = ''; }
+        if (timeInput) { timeInput.required = false; timeInput.value = ''; }
       }
       updatePriceDisplay();
       if (materialModal) {
@@ -779,20 +788,16 @@ function initWebsiteScripts() {
   modalRequestType?.addEventListener('change', (e) => {
     if (e.target.value === 'Scheduled Request') {
       if (scheduledFields) scheduledFields.style.display = 'block';
-      const dateInput = scheduledFields?.querySelector('[name="scheduledDate"]');
-      const timeInput = scheduledFields?.querySelector('[name="scheduledTime"]');
-      if (dateInput) dateInput.required = true;
-      if (timeInput) timeInput.required = true;
     } else {
       if (scheduledFields) scheduledFields.style.display = 'none';
       const dateInput = scheduledFields?.querySelector('[name="scheduledDate"]');
       const timeInput = scheduledFields?.querySelector('[name="scheduledTime"]');
-      if (dateInput) { dateInput.required = false; dateInput.value = ''; }
-      if (timeInput) { timeInput.required = false; timeInput.value = ''; }
+      if (dateInput) dateInput.value = '';
+      if (timeInput) timeInput.value = '';
     }
   });
 
-  // Initialize subcategories on load
+  // Initialize subcategories as blank on load
   if (modalBuildingMaterial) {
     updateSubcategories(modalBuildingMaterial.value);
   }
@@ -801,55 +806,24 @@ function initWebsiteScripts() {
   function submitMaterialToWhatsApp(form) {
     const name = form.querySelector('[name="fullName"]')?.value?.trim();
     const phone = form.querySelector('[name="phoneNumber"]')?.value?.trim();
+    const whatsapp = form.querySelector('[name="whatsappNumber"]')?.value?.trim();
     const truck = modalTruckSize?.value;
     const material = modalBuildingMaterial?.value;
     const subcategory = modalMaterialSubcategory?.value;
     const destination = form.querySelector('[name="projectLocation"]')?.value?.trim();
     const requestType = modalRequestType?.value;
-    const scheduledDate = form.querySelector('[name="scheduledDate"]')?.value?.trim() || 'N/A';
-    const scheduledTime = form.querySelector('[name="scheduledTime"]')?.value?.trim() || 'N/A';
-    const instructions = form.querySelector('[name="additionalInstructions"]')?.value?.trim() || 'None provided';
+    const scheduledDate = form.querySelector('[name="scheduledDate"]')?.value?.trim();
+    const scheduledTime = form.querySelector('[name="scheduledTime"]')?.value?.trim();
+    const instructions = form.querySelector('[name="additionalInstructions"]')?.value?.trim();
 
     if (!name) {
-      showToast('Please enter your full name.');
+      showToast('Please enter your name.');
       form.querySelector('[name="fullName"]')?.focus();
       return;
     }
     if (!phone) {
-      showToast('Please enter your phone/WhatsApp number.');
+      showToast('Please enter your phone number.');
       form.querySelector('[name="phoneNumber"]')?.focus();
-      return;
-    }
-    if (!truck) {
-      showToast('Please select a tipper truck bucket size.');
-      modalTruckSize?.focus();
-      return;
-    }
-    if (!material) {
-      showToast('Please select a building material.');
-      modalBuildingMaterial?.focus();
-      return;
-    }
-    if (!subcategory) {
-      showToast('Please select a material subcategory/type.');
-      modalMaterialSubcategory?.focus();
-      return;
-    }
-    if (!destination) {
-      showToast('Please enter the delivery destination.');
-      form.querySelector('[name="projectLocation"]')?.focus();
-      return;
-    }
-    if (requestType === 'Scheduled Request') {
-      const dVal = form.querySelector('[name="scheduledDate"]')?.value?.trim();
-      const tVal = form.querySelector('[name="scheduledTime"]')?.value?.trim();
-      if (!dVal || !tVal) {
-        showToast('Please provide scheduled delivery date and time.');
-        return;
-      }
-    }
-    if (!currentSelectedPrice) {
-      showToast('Please complete truck size and material selections to determine price.');
       return;
     }
 
@@ -861,24 +835,33 @@ function initWebsiteScripts() {
     lines.push('Hello, I would like to make a building materials request.');
     lines.push('');
     lines.push('CUSTOMER INFORMATION');
-    lines.push(`Full Name: ${name}`);
+    lines.push(`Name: ${name}`);
     lines.push(`Phone Number: ${phone}`);
-    lines.push('');
-    lines.push('ORDER DETAILS');
-    lines.push(`Tipper Truck Bucket Size: ${truck}`);
-    lines.push(`Building Material: ${material}`);
-    lines.push(`Material Type: ${subcategory}`);
-    lines.push(`Estimated Material Price: GH₵ ${currentSelectedPrice}`);
-    lines.push('');
-    lines.push('DELIVERY INFORMATION');
-    lines.push(`Destination: ${destination}`);
-    lines.push(`Request Type: ${requestType}`);
-    if (requestType === 'Scheduled Request') {
-      lines.push(`Scheduled Delivery Date: ${scheduledDate}`);
-      lines.push(`Preferred Delivery Time: ${scheduledTime}`);
+    if (whatsapp) {
+      lines.push(`WhatsApp Number: ${whatsapp}`);
     }
-    lines.push('');
-    lines.push(`Additional Instructions: ${instructions}`);
+    if (truck || material || subcategory || currentSelectedPrice) {
+      lines.push('');
+      lines.push('ORDER DETAILS');
+      if (truck) lines.push(`Tipper Truck Bucket Size: ${truck}`);
+      if (material) lines.push(`Building Material: ${material}`);
+      if (subcategory) lines.push(`Material Type: ${subcategory}`);
+      if (currentSelectedPrice) lines.push(`Estimated Material Price: GH₵ ${currentSelectedPrice}`);
+    }
+    if (destination || requestType || scheduledDate || scheduledTime) {
+      lines.push('');
+      lines.push('DELIVERY INFORMATION');
+      if (destination) lines.push(`Destination: ${destination}`);
+      if (requestType) lines.push(`Request Type: ${requestType}`);
+      if (requestType === 'Scheduled Request') {
+        if (scheduledDate) lines.push(`Scheduled Delivery Date: ${scheduledDate}`);
+        if (scheduledTime) lines.push(`Preferred Delivery Time: ${scheduledTime}`);
+      }
+    }
+    if (instructions) {
+      lines.push('');
+      lines.push(`Additional Instructions: ${instructions}`);
+    }
     lines.push('');
     lines.push('Please confirm availability and provide any further information regarding this request.');
     lines.push('');
