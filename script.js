@@ -620,6 +620,9 @@ function initWebsiteScripts() {
         "3/8 Inch (Three-Eighth Inch)": 4800,
         "5/8 Inch (Five-Eighth Inch)": 4800
       },
+      "Quarry Dust": {
+        "Quarry Dust": 5500
+      },
       "Riversand": {
         "Smooth Sand": 4000,
         "Medium Sand": 4000,
@@ -642,6 +645,9 @@ function initWebsiteScripts() {
         "3/8 Inch (Three-Eighth Inch)": 5000,
         "5/8 Inch (Five-Eighth Inch)": 5000
       },
+      "Quarry Dust": {
+        "Quarry Dust": 5700
+      },
       "Riversand": {
         "Smooth Sand": 4000,
         "Medium Sand": 4000,
@@ -663,6 +669,9 @@ function initWebsiteScripts() {
         "1 Inch (One Inch)": 5000,
         "3/8 Inch (Three-Eighth Inch)": 5000,
         "5/8 Inch (Five-Eighth Inch)": 5000
+      },
+      "Quarry Dust": {
+        "Quarry Dust": 6200
       },
       "Riversand": {
         "Smooth Sand": 4200,
@@ -687,6 +696,9 @@ function initWebsiteScripts() {
       "1 Inch (One Inch)",
       "3/8 Inch (Three-Eighth Inch)",
       "5/8 Inch (Five-Eighth Inch)"
+    ],
+    "Quarry Dust": [
+      "Quarry Dust"
     ],
     "Riversand": [
       "Smooth Sand",
@@ -724,17 +736,17 @@ function initWebsiteScripts() {
 
   function updatePriceDisplay() {
     if (!priceBannerText) return;
-    const truck = modalTruckSize?.value;
+    const truck = modalTruckSize?.value || '16 Cubic';
     const mat = modalBuildingMaterial?.value;
     const sub = modalMaterialSubcategory?.value;
 
-    if (truck && mat && sub && pricingData[truck]?.[mat]?.[sub] !== undefined) {
+    if (mat && sub && pricingData[truck]?.[mat]?.[sub] !== undefined) {
       const price = pricingData[truck][mat][sub];
       currentSelectedPrice = price.toLocaleString('en-US');
       priceBannerText.textContent = `Estimated Material Price: GH₵ ${currentSelectedPrice}`;
     } else {
       currentSelectedPrice = null;
-      priceBannerText.textContent = 'Select truck size and material type to view price.';
+      priceBannerText.textContent = 'Select building material and type to view price.';
     }
   }
 
@@ -826,6 +838,22 @@ function initWebsiteScripts() {
       form.querySelector('[name="phoneNumber"]')?.focus();
       return;
     }
+    if (!material) {
+      showToast('Please select a building material.');
+      modalBuildingMaterial?.focus();
+      return;
+    }
+    if (!subcategory) {
+      showToast('Please select a material subcategory/type.');
+      modalMaterialSubcategory?.focus();
+      return;
+    }
+
+    const effectiveTruck = truck || '16 Cubic';
+    const calculatedPrice = pricingData[effectiveTruck]?.[material]?.[subcategory];
+    const displayPrice = calculatedPrice !== undefined
+      ? calculatedPrice.toLocaleString('en-US')
+      : currentSelectedPrice;
 
     const WHATSAPP_MATERIAL_NUMBER = WHATSAPP_PHONE_NUMBER; // Ghana +233 268339409 (0268339409)
 
@@ -840,14 +868,12 @@ function initWebsiteScripts() {
     if (whatsapp) {
       lines.push(`WhatsApp Number: ${whatsapp}`);
     }
-    if (truck || material || subcategory || currentSelectedPrice) {
-      lines.push('');
-      lines.push('ORDER DETAILS');
-      if (truck) lines.push(`Tipper Truck Bucket Size: ${truck}`);
-      if (material) lines.push(`Building Material: ${material}`);
-      if (subcategory) lines.push(`Material Type: ${subcategory}`);
-      if (currentSelectedPrice) lines.push(`Estimated Material Price: GH₵ ${currentSelectedPrice}`);
-    }
+    lines.push('');
+    lines.push('ORDER DETAILS');
+    if (truck) lines.push(`Tipper Truck Bucket Size: ${truck}`);
+    lines.push(`Building Material: ${material}`);
+    lines.push(`Material Type: ${subcategory}`);
+    if (displayPrice) lines.push(`Estimated Material Price: GH₵ ${displayPrice}`);
     if (destination || requestType || scheduledDate || scheduledTime) {
       lines.push('');
       lines.push('DELIVERY INFORMATION');
